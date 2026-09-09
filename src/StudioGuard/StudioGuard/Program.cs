@@ -1,17 +1,33 @@
-namespace StudioGuard
+using StudioGuard.Logging;
+
+namespace StudioGuard;
+
+internal static class Program
 {
-    internal static class Program
+    [STAThread]
+    static void Main()
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        ApplicationConfiguration.Initialize();
+
+        string logFolder = Path.Combine(
+            AppContext.BaseDirectory,
+            "Logs");
+
+        Directory.CreateDirectory(logFolder);
+
+        string logFilePath = Path.Combine(
+            logFolder,
+            "studioguard.log");
+
+        FileLogger logger = new FileLogger(logFilePath);
+
+        logger.Log(new LogEntry
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
-        }
+            Timestamp = DateTime.Now,
+            Level = "INFO",
+            Message = "StudioGuard avviato."
+        });
+
+        Application.Run(new MainForm());
     }
 }
